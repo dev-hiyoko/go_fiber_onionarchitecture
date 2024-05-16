@@ -17,11 +17,11 @@ post:
             username:
               type: string
               description: email or original id
+              maxLength: 255
             password:
               type: string
-              minLength: 8
-              maxLength: 255
               pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,255}$'
+              maxLength: 72
   responses:
     '200':
       $ref: '../../responses/auth/SigninResponse.yml'

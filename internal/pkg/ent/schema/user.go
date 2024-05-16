@@ -37,15 +37,16 @@ func (User) Fields() []ent.Field {
 			GoType(users.Status(0)).
 			Default(users.Status(0).Default().ToInt8()),
 		field.String("original_id").
-			MinLen(4).
 			MaxLen(255).
 			Optional(),
 		field.String("email").
-			MinLen(4).
 			MaxLen(255).
 			Unique().
 			NotEmpty(),
-		field.String("password").Sensitive().NotEmpty(),
+		field.String("password").
+			MaxLen(255).
+			Sensitive().
+			NotEmpty(),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now).

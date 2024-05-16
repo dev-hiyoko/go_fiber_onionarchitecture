@@ -15,8 +15,8 @@ func (i SignupInput) Validate() error {
 }
 
 type SigninInput struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Username string `json:"username" validate:"required,max=255"`
+	Password string `json:"password" validate:"required,max=72"`
 }
 
 func (i SigninInput) Validate() error {
