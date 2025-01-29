@@ -6,12 +6,7 @@ import (
 	"net/smtp"
 )
 
-const (
-	TemplateDir    = "./pkg/mail/templates"
-	SummaryDirName = "common"
-)
-
-type Config struct {
+type Smtp struct {
 	Host       string
 	Port       string
 	User       string
@@ -20,8 +15,19 @@ type Config struct {
 	AuthMethod string
 }
 
-func (c *Config) Send(email Email) error {
-	auth, err := c.buildAuth()
+func NewSmtp(host, port, user, password string, tlsEnabled bool, authMethod string) *Smtp {
+	return &Smtp{
+		Host:       host,
+		Port:       port,
+		User:       user,
+		Password:   password,
+		TLSEnabled: tlsEnabled,
+		AuthMethod: authMethod,
+	}
+}
+
+func (s *Smtp) Send(email Email) error {
+	auth, err := s.buildAuth()
 	if err != nil {
 		return err
 	}
@@ -32,18 +38,18 @@ func (c *Config) Send(email Email) error {
 		return err
 	}
 
-	if c.TLSEnabled {
+	if s.TLSEnabled {
 		tlsConfig := &tls.Config{
 			InsecureSkipVerify: true,
-			ServerName:         c.Host,
+			ServerName:         s.Host,
 		}
 
-		conn, err := tls.Dial("tcp", c.Host+":"+c.Port, tlsConfig)
+		conn, err := tls.Dial("tcp", s.Host+":"+s.Port, tlsConfig)
 		if err != nil {
 			return err
 		}
 
-		client, err := smtp.NewClient(conn, c.Host)
+		client, err := smtp.NewClient(conn, s.Host)
 		if err != nil {
 			return err
 		}
@@ -57,7 +63,7 @@ func (c *Config) Send(email Email) error {
 			return err
 		}
 	} else {
-		err := smtp.SendMail(c.Host+":"+c.Port, auth, email.From, email.createRecipientList(), []byte(msg))
+		err := smtp.SendMail(s.Host+":"+s.Port, auth, email.From, email.createRecipientList(), []byte(msg))
 		if err != nil {
 			return err
 		}
@@ -66,9 +72,9 @@ func (c *Config) Send(email Email) error {
 	return nil
 }
 
-func (c *Config) buildAuth() (smtp.Auth, error) {
-	if c.AuthMethod == "PLAIN" {
-		return smtp.PlainAuth("", c.User, c.Password, c.Host), nil
+func (s *Smtp) buildAuth() (smtp.Auth, error) {
+	if s.AuthMethod == "PLAIN" {
+		return smtp.PlainAuth("", s.User, s.Password, s.Host), nil
 	}
 	return nil, errors.New("unsupported auth method")
 }

@@ -5,22 +5,27 @@ import (
 	"hiyoko-fiber/utils"
 )
 
-func NewSmtpConf() (conf smtp.Config) {
-	conf.Host = utils.Env("MAIL_HOST").GetString("localhost")
-	conf.Port = utils.Env("MAIL_PORT").GetString("1025")
-	conf.User = utils.Env("MAIL_USERNAME").GetString("")
-	conf.Password = utils.Env("MAIL_PASSWORD").GetString("")
-	conf.TLSEnabled = utils.Env("MAIL_TLS").GetBool(false)
-	conf.AuthMethod = "PLAIN"
-	return
+func NewSmtpConf() (conf *smtp.Smtp) {
+	smtpConf := smtp.NewSmtp(
+		utils.Env("MAIL_HOST").GetString("localhost"),
+		utils.Env("MAIL_PORT").GetString("1025"),
+		utils.Env("MAIL_USERNAME").GetString(""),
+		utils.Env("MAIL_PASSWORD").GetString(""),
+		utils.Env("MAIL_TLS").GetBool(false),
+		"PLAIN",
+	)
+	return smtpConf
 }
 
 func NewEmailConf() (*smtp.Email, error) {
-	email := &smtp.Email{
-		From:     utils.Env("MAIL_FROM_ADDRESS").GetString("no-reply@example.com"),
-		FromName: utils.Env("MAIL_FROM_NAME").GetString("ひよこ"),
-	}
-	err := email.SetAssetsPngImages("./assets/images")
+	emailConf := smtp.NewEmail(
+		utils.Env("MAIL_FROM_ADDRESS").GetString("no-reply@example.com"),
+		utils.Env("MAIL_FROM_NAME").GetString("ひよこ"),
+	)
 
-	return email, err
+	smtp.SetTemplateDirectory("resources/templates/email/")
+	smtp.SetCommonDirectoryName("common/")
+	err := emailConf.SetAssetsPngImages("resources/assets/images")
+
+	return emailConf, err
 }

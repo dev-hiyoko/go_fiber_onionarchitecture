@@ -10,7 +10,10 @@ import (
 	"strings"
 )
 
-// TODO テンプレートフォルダを外部のものに変更できるようにする
+var (
+	templateDirectory   = "./pkg/mail/templates/"
+	commonDirectoryName = "common/"
+)
 
 type Email struct {
 	From             string
@@ -22,6 +25,24 @@ type Email struct {
 	TemplateFileName string
 	Data             map[string]string
 	LangData         map[string]string
+}
+
+func NewEmail(
+	from string,
+	fromName string,
+) *Email {
+	return &Email{
+		From:     from,
+		FromName: fromName,
+	}
+}
+
+func SetTemplateDirectory(dir string) {
+	templateDirectory = dir
+}
+
+func SetCommonDirectoryName(dirName string) {
+	commonDirectoryName = dirName
 }
 
 // SetData Add all data in map.
@@ -68,7 +89,7 @@ func (e *Email) SetAssetsPngImages(dir string) error {
 }
 
 func (e *Email) buildMsgFromTemplate() (string, error) {
-	commonDir := filepath.Join(TemplateDir, SummaryDirName)
+	commonDir := filepath.Join(templateDirectory, commonDirectoryName)
 	templateFiles, err := filepath.Glob(commonDir + "/*.tmpl")
 	if err != nil {
 		return "", err
@@ -79,7 +100,7 @@ func (e *Email) buildMsgFromTemplate() (string, error) {
 		return "", err
 	}
 
-	t, err = t.ParseFiles(filepath.Join(TemplateDir, e.TemplateFileName))
+	t, err = t.ParseFiles(filepath.Join(templateDirectory, e.TemplateFileName))
 	if err != nil {
 		return "", err
 	}
