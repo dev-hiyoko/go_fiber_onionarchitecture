@@ -69,6 +69,7 @@ func main() {
 		err := h.GenJWTSecretKeyForApp()
 		if err != nil {
 			logger.Fatal(errDefaultMsg, "error", err)
+			return
 		}
 	}
 	logger.Info(successfulMsg)
