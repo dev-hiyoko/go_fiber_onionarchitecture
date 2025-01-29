@@ -11,7 +11,7 @@ type UsersModel struct {
 
 func (u UsersModel) ToEntity() *users.UserEntity {
 	return &users.UserEntity{
-		ID:         u.ID.ToString(),
+		ID:         u.ID.String(),
 		Status:     u.Status,
 		OriginalID: u.OriginalID,
 		Email:      u.Email,
