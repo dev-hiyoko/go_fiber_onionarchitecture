@@ -30,19 +30,19 @@ func NewMiddleware(app *fiber.App) {
 	app.Use(recover.New())
 
 	// caching
-	//app.Use(cache.New(cache.Config{
+	// app.Use(cache.New(cache.Config{
 	//	Next: func(c *fiber.Ctx) bool {
 	//		return c.Query("noCache") == "true"
 	//	},
 	//	Expiration:   CacheExp,
 	//	CacheHeader:  HeaderNameCache,
 	//	CacheControl: true,
-	//}))
+	// }))
 
 	// etag
-	//app.Use(etag.New(etag.Config{
+	// app.Use(etag.New(etag.Config{
 	//	Weak: true,
-	//}))
+	// }))
 
 	// encoding
 	app.Use(compress.New(compress.Config{
@@ -96,7 +96,7 @@ func NewMiddleware(app *fiber.App) {
 
 	// logger
 	app.Use(func(c *fiber.Ctx) error {
-		logger.With("request id", c.Locals(RequestIDContextKey))
+		log.With("request id", c.Locals(RequestIDContextKey))
 		return c.Next()
 	})
 

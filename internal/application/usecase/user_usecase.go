@@ -10,7 +10,7 @@ import (
 	entUtil "hiyoko-fiber/internal/pkg/ent/util"
 	"hiyoko-fiber/internal/presentation/http/app/input"
 	"hiyoko-fiber/internal/shared"
-	logger "hiyoko-fiber/pkg/logging/file"
+	"hiyoko-fiber/pkg/logging/file"
 	"hiyoko-fiber/utils"
 )
 
@@ -31,7 +31,7 @@ func NewUserUseCase(r services.UserRepository) UserUseCase {
 func (u *userUseCase) GetUser(ctx context.Context, id entUtil.ULID) (*users.UserEntity, error) {
 	user, err := u.UserRepository.Get(ctx, &id)
 	if err != nil {
-		logger.Error("Error getting user", "id", id, "error", err)
+		log.Error("Error getting user", "id", id, "error", err)
 		return &users.UserEntity{}, err
 	}
 
@@ -46,7 +46,7 @@ func (u *userUseCase) Signup(ctx context.Context, input *input.SignupInput) (*au
 
 	password, err := auth.HashPassword(input.Password)
 	if err != nil {
-		logger.Error("hash password", "error", err)
+		log.Error("hash password", "error", err)
 		return &authEntity.AuthenticationEntity{}, err
 	}
 
@@ -58,14 +58,14 @@ func (u *userUseCase) Signup(ctx context.Context, input *input.SignupInput) (*au
 
 	user, err = u.UserRepository.Create(ctx, user)
 	if err != nil {
-		logger.Error("Error create user", "input", user, "error", err)
+		log.Error("Error create user", "input", user, "error", err)
 		return &authEntity.AuthenticationEntity{}, err
 	}
 
 	claims := auth.NewClaims(user.ID)
 	tokenString, err := claims.CreateTokenString()
 	if err != nil {
-		logger.Error("Error create jwt token", "claims", claims, "error", err)
+		log.Error("Error create jwt token", "claims", claims, "error", err)
 		return &authEntity.AuthenticationEntity{}, err
 	}
 
@@ -109,7 +109,7 @@ func (u *userUseCase) Signin(ctx context.Context, input *input.SigninInput) (*au
 	}
 
 	if err != nil {
-		logger.Error("Error getting user", "error", err)
+		log.Error("Error getting user", "error", err)
 		return &authEntity.AuthenticationEntity{}, err
 	}
 
@@ -120,7 +120,7 @@ func (u *userUseCase) Signin(ctx context.Context, input *input.SigninInput) (*au
 	claims := auth.NewClaims(user.ID)
 	tokenString, err := claims.CreateTokenString()
 	if err != nil {
-		logger.Error("Error create jwt token", "claims", claims, "error", err)
+		log.Error("Error create jwt token", "claims", claims, "error", err)
 		return &authEntity.AuthenticationEntity{}, err
 	}
 

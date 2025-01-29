@@ -27,7 +27,7 @@ func (h *authHandler) Signup(c *fiber.Ctx) error {
 	ctx := c.Context()
 	userInput := new(input.SignupInput)
 	if err := c.BodyParser(userInput); err != nil {
-		logger.Error("Error BodyParser signup input", "userInput", userInput, "error", err)
+		log.Error("Error BodyParser signup input", "userInput", userInput, "error", err)
 		return shared.ResponseBadRequest(c, shared.NoneCode)
 	}
 
@@ -58,7 +58,7 @@ func (h *authHandler) Signin(c *fiber.Ctx) error {
 	ctx := c.Context()
 	userInput := new(input.SigninInput)
 	if err := c.BodyParser(userInput); err != nil {
-		logger.Error("Error BodyParser signin input", "userInput", userInput, "error", err)
+		log.Error("Error BodyParser signin input", "userInput", userInput, "error", err)
 		return shared.ResponseBadRequest(c, shared.NoneCode)
 	}
 

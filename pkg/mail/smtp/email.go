@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+// TODO テンプレートフォルダを外部のものに変更できるようにする
+
 type Email struct {
 	From             string
 	FromName         string

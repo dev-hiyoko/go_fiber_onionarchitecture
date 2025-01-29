@@ -11,7 +11,7 @@ import (
 	"hiyoko-fiber/configs"
 	"hiyoko-fiber/internal/infrastructure/database"
 	"hiyoko-fiber/internal/interactor"
-	logger "hiyoko-fiber/pkg/logging/file"
+	"hiyoko-fiber/pkg/logging/file"
 	"hiyoko-fiber/utils"
 )
 
@@ -37,25 +37,25 @@ func init() {
 	query = flag.String("query", "ping", "exec query")
 	flag.Parse()
 
-	logger.SetLogDir(logDir)
-	logger.Initialize()
-	logger.With("query", query)
+	log.SetLogDir(logDir)
+	log.Initialize()
+	log.With("query", query)
 
 	err := utils.EnvFile(filepath.Join(envRoot, ".env")).LoadEnv()
 	if err != nil {
-		logger.Fatal("Failed to load environment variables", "error", err)
+		log.Fatal("Failed to load environment variables", "error", err)
 	}
 }
 
 func main() {
 	entClient, err := database.NewMySqlConnect(configs.NewMySqlConf())
 	if err != nil {
-		logger.Fatal("Failed to create dbclient", "error", err)
+		log.Fatal("Failed to create dbclient", "error", err)
 	}
 	defer func(entClient *database.MysqlEntClient) {
 		err := entClient.Close()
 		if err != nil {
-			logger.Fatal("Failed to close dbclient", "error", err)
+			log.Fatal("Failed to close dbclient", "error", err)
 		}
 	}(entClient)
 
@@ -67,28 +67,28 @@ func main() {
 	case dBQueryPing:
 		err := r.Ping(ctx)
 		if err != nil {
-			logger.Fatal(errDefaultMsg, "error", err)
+			log.Fatal(errDefaultMsg, "error", err)
 		}
 	case dBQueryMigrate:
 		err := r.Migrate(ctx)
 		if err != nil {
-			logger.Fatal(errDefaultMsg, "error", err)
+			log.Fatal(errDefaultMsg, "error", err)
 		}
 	case dBQuerySeed:
 		err := r.Seed(ctx)
 		if err != nil {
-			logger.Fatal(errDefaultMsg, "error", err)
+			log.Fatal(errDefaultMsg, "error", err)
 		}
 	case dBQueryTruncate:
 		err := r.TruncateAll(ctx)
 		if err != nil {
-			logger.Fatal(errDefaultMsg, "error", err)
+			log.Fatal(errDefaultMsg, "error", err)
 		}
 	case dBQueryDrop:
 		err := r.DropAll(ctx)
 		if err != nil {
-			logger.Fatal(errDefaultMsg, "error", err)
+			log.Fatal(errDefaultMsg, "error", err)
 		}
 	}
-	logger.Info(successfulMsg)
+	log.Info(successfulMsg)
 }
