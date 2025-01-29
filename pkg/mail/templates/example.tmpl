@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ .Lang }}">
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Simple Transactional Email</title>
+    <title>{{ .EmailVerifyTitle }}</title>
     {{template "style.tmpl" .}}
 </head>
 <body>
@@ -14,41 +15,20 @@
         <td class="container">
             <div class="content">
 
-                <!-- START CENTERED WHITE CONTAINER -->
-                <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+                {{template "header.tmpl" .}}
+
                 <table role="presentation" class="main">
 
-                    {{template "header.tmpl" .}}
-
-                    <!-- START MAIN CONTENT AREA -->
                     <tr>
                         <td class="wrapper">
-                            <p>Hi there</p>
-                            <p>Sometimes you just want to send a simple HTML email with a simple design and clear call
-                                to action. This is it.</p>
-                            <table role="presentation" class="btn btn-primary">
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <table role="presentation">
-                                            <tbody>
-                                            <tr>
-                                                <td><a href="http://htmlemail.io" target="_blank">Call To Action</a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <p>This is a really simple email template. It's sole purpose is to get the recipient to
-                                click the button with no distractions.</p>
-                            <p>Good luck! Hope it works.</p>
+                            <h2>{{ .Hello }}</h2>
+                            <p>{{ .EmailVerifyText1 }}</p>
+                            <p class="code">{{ .Code }}</p>
+                            <p>{{ .ThankYou }}</p>
+                            <p>Hiyoko {{ .Team }}</p>
                         </td>
                     </tr>
 
-                    <!-- END MAIN CONTENT AREA -->
                 </table>
 
                 {{template "footer.tmpl" .}}

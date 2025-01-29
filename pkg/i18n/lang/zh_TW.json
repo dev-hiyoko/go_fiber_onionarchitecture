@@ -1,3 +1,9 @@
 {
-    "Hello":"你好,"
+    "Lang": "zh_TW",
+    "Hello": "你好,",
+    "ThankYou": "謝謝。",
+    "Team": "團隊",
+
+    "EmailVerifyTitle": "電子郵件認證碼",
+    "EmailVerifyText1": "要註冊帳號，需要進行電子郵件驗證。請按照畫面上的指示操作，並輸入以下代碼完成您的請求。"
 }
