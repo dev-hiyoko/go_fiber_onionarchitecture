@@ -34,13 +34,13 @@ mockgen:
 
 # docker
 docker/up:
-	docker-compose --env-file ./cmd/app/.env up -d --build
+	docker compose --env-file ./cmd/app/.env up -d --build
 docker/up/db:
-	docker-compose --env-file ./cmd/app/.env up -d db --build
+	docker compose --env-file ./cmd/app/.env up -d db --build
 docker/up/mailhog:
-	docker-compose --env-file ./cmd/app/.env up -d mailhog --build
+	docker compose --env-file ./cmd/app/.env up -d mailhog --build
 docker/exec/go:
-	docker-compose --env-file ./cmd/app/.env exec go ash
+	docker compose --env-file ./cmd/app/.env exec go ash
 
 # git
 git/commit-template:
