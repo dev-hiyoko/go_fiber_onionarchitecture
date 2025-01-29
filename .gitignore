@@ -1,6 +1,3 @@
-# exists example file
-.github/.gitmessage.txt
-
 # tmp file
 tmp
 
@@ -23,7 +20,7 @@ internal/pkg/ent/*
 
 # oapi
 internal/presentation/http/app/oapi/*
-api/app/oapi-spec/root.gen.yml
+root.gen.yml
 
 # mockgen
 internal/application/usecase/mocks/*
