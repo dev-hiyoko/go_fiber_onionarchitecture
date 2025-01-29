@@ -15,8 +15,4 @@ func NewRouter(f *fiber.App, h handler.AppHandler) {
 
 	v1Guard := v1.Use(auth.Auth())
 	v1Guard.Get("/users/me", h.GetMe)
-
-	//v1.Get("/users/:id", h.GetUser)
-	//v1Guard.PUT("/users/:id", h.UpdateUser)
-	//v1Guard.DELETE("/users/:id", h.DeleteUser)
 }
