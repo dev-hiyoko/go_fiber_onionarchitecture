@@ -2,8 +2,6 @@ package shared
 
 import "net/http"
 
-const NoneCode = "000"
-
 func GetErrorMessage(statusCode int) string {
 	switch statusCode {
 	case http.StatusBadRequest:

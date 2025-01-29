@@ -49,6 +49,28 @@ func (r *userRepository) GetByOriginalID(ctx context.Context, originalID string)
 	return models.UsersModel{User: *u}.ToEntity(), nil
 }
 
+func (r *userRepository) ExistByEmail(ctx context.Context, email string) (bool, error) {
+	exist, err := r.conn.User.
+		Query().
+		Where(user.EmailEqualFold(email)).
+		Exist(ctx)
+	if err != nil {
+		return exist, err
+	}
+	return exist, nil
+}
+
+func (r *userRepository) ExistByOriginalID(ctx context.Context, originalID string) (bool, error) {
+	exist, err := r.conn.User.
+		Query().
+		Where(user.OriginalIDEqualFold(originalID)).
+		Exist(ctx)
+	if err != nil {
+		return exist, err
+	}
+	return exist, nil
+}
+
 func (r *userRepository) Create(ctx context.Context, u *users.UserEntity) (*users.UserEntity, error) {
 	userClient := r.conn.User.Create().
 		SetEmail(u.Email).

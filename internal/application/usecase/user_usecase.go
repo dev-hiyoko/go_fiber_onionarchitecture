@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	authEntity "hiyoko-fiber/internal/domain/entities/auth"
 	"hiyoko-fiber/internal/domain/entities/users"
@@ -10,7 +9,8 @@ import (
 	"hiyoko-fiber/internal/pkg/auth/v1"
 	entUtil "hiyoko-fiber/internal/pkg/ent/util"
 	"hiyoko-fiber/internal/presentation/http/app/input"
-	"hiyoko-fiber/pkg/logging/file"
+	"hiyoko-fiber/internal/shared"
+	logger "hiyoko-fiber/pkg/logging/file"
 	"hiyoko-fiber/utils"
 )
 
@@ -18,7 +18,6 @@ type UserUseCase interface {
 	GetUser(ctx context.Context, id entUtil.ULID) (*users.UserEntity, error)
 	Signup(ctx context.Context, input *input.SignupInput) (*authEntity.AuthenticationEntity, error)
 	Signin(ctx context.Context, input *input.SigninInput) (*authEntity.AuthenticationEntity, error)
-	//UpdateUser(ctx context.Context, id string) (*ent.User, error)
 }
 
 type userUseCase struct {
@@ -40,6 +39,11 @@ func (u *userUseCase) GetUser(ctx context.Context, id entUtil.ULID) (*users.User
 }
 
 func (u *userUseCase) Signup(ctx context.Context, input *input.SignupInput) (*authEntity.AuthenticationEntity, error) {
+	err := validateForSignup(u.UserRepository, ctx, input.Email, input.OriginalID)
+	if err != nil {
+		return &authEntity.AuthenticationEntity{}, err
+	}
+
 	password, err := auth.HashPassword(input.Password)
 	if err != nil {
 		logger.Error("hash password", "error", err)
@@ -72,6 +76,28 @@ func (u *userUseCase) Signup(ctx context.Context, input *input.SignupInput) (*au
 	}, nil
 }
 
+func validateForSignup(r services.UserRepository, ctx context.Context, email string, originalID string) error {
+	exist, err := r.ExistByEmail(ctx, email)
+	if err != nil {
+		return err
+	}
+
+	if exist {
+		return shared.UserEmailExistsError.Error()
+	}
+
+	exist, err = r.ExistByOriginalID(ctx, originalID)
+	if err != nil {
+		return err
+	}
+
+	if exist {
+		return shared.UserOriginalIDExistsError.Error()
+	}
+
+	return nil
+}
+
 func (u *userUseCase) Signin(ctx context.Context, input *input.SigninInput) (*authEntity.AuthenticationEntity, error) {
 	var user *users.UserEntity
 	var err error
@@ -89,7 +115,7 @@ func (u *userUseCase) Signin(ctx context.Context, input *input.SigninInput) (*au
 
 	passwordMatch := auth.CheckPasswordHash(input.Password, user.Password)
 	if !passwordMatch {
-		return &authEntity.AuthenticationEntity{}, fmt.Errorf("password does not match")
+		return &authEntity.AuthenticationEntity{}, shared.UserPasswordNotMatchError.Error()
 	}
 	claims := auth.NewClaims(user.ID)
 	tokenString, err := claims.CreateTokenString()

@@ -31,13 +31,14 @@ func (h *authHandler) Signup(c *fiber.Ctx) error {
 		return shared.ResponseBadRequest(c, shared.NoneCode)
 	}
 
+	// TODO validate用のレスポンスを作成する
 	if err := userInput.Validate(); err != nil {
-		return shared.ResponseBadRequest(c, shared.NoneCode)
+		return shared.ResponseBadRequest(c, shared.GetErrorCodes(err))
 	}
 
 	authEntity, err := h.UserUseCase.Signup(ctx, userInput)
 	if err != nil {
-		return shared.ResponseBadRequest(c, shared.NoneCode)
+		return shared.ResponseBadRequest(c, shared.GetErrorCodes(err))
 	}
 
 	return shared.ResponseCreate(c, oapi.SignupResponse{
@@ -61,8 +62,9 @@ func (h *authHandler) Signin(c *fiber.Ctx) error {
 		return shared.ResponseBadRequest(c, shared.NoneCode)
 	}
 
+	// TODO validate用のレスポンスを作成する
 	if err := userInput.Validate(); err != nil {
-		return shared.ResponseBadRequest(c, shared.NoneCode)
+		return shared.ResponseBadRequest(c, shared.GetErrorCodes(err))
 	}
 
 	authEntity, err := h.UserUseCase.Signin(ctx, userInput)

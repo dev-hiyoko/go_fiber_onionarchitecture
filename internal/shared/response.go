@@ -45,8 +45,9 @@ func ResponseBadRequest(c *fiber.Ctx, code string) error {
 		logger.Error("BadRequest response Set status failed", "error", err, "code", code)
 		return err
 	}
+	// Bad request always returns none code for security reasons
 	if err := c.JSON(ErrorResponse{
-		Code:    code,
+		Code:    NoneCode,
 		Message: GetErrorMessage(http.StatusBadRequest),
 	}); err != nil {
 		logger.Error("BadRequest response JSON conversion failed", "error", err, "code", code)
